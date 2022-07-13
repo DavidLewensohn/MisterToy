@@ -1,12 +1,20 @@
-import { storageService } from "./async-storage.service.js"
 
-const KEY = 'toyDB'
+import { utilService } from "./util-service.js"
+import axios from 'axios'
+
+
+const BASE_URL = (process.env.NODE_ENV !== 'development')
+    ? '/api/toy'
+    : '//localhost:3000/api/toy'
+
+
 
 export const toyService = {
     getToys,
     removeToy,
     getById,
     save,
+    getEmptyToy,
 }
 const toys = [{
     "_id": "t101",
@@ -31,22 +39,29 @@ const toys = [{
     "inStock": true
 }]
 
-function getToys() {
-    if (!localStorage.KEY) localStorage.setItem(KEY, JSON.stringify(toys))
-    return storageService.query(KEY)
+function getToys(filterBy) {
+    return axios.get(BASE_URL, { params: filterBy }).then((res) => res.data)
 }
 
 function removeToy(toyId) {
-    return storageService.remove(KEY, toyId)
+    return axios.delete(BASE_URL+ toyId).then(res => res.data)
 }
 function getById(toyId) {
-    return storageService.get(KEY, toyId)
+    return axios.get(BASE_URL+ toyId).then((res) => res.data)
+
+}
+function save(toy) {
+    if (toy._id) return axios.put(BASE_URL + toy._id, toy).then((res) => res.data)
+    return axios.post(BASE_URL, toy).then((res) => res.data)
 }
 
-function save(toy) {
-    if (toy._id) return storageService.put(KEY, toy)
-    return storageService.post(KEY, toy)
-  }
-
-
-  
+function getEmptyToy() {
+    return {
+        "_id": utilService.makeId(),
+        "name": null,
+        "price": null,
+        "labels": [],
+        "createdAt": Date.now(),
+        "inStock": false,
+    }
+}

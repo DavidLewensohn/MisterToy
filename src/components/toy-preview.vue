@@ -1,5 +1,4 @@
 <template>
-    <h2>preview</h2>
     <pre>{{ toy }}</pre>
     <button @click="removeToy(toy._id)">Delete</button>
     <button @click="goToDetails(toy._id)">Details</button>

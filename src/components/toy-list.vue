@@ -1,5 +1,4 @@
 <template>
-    <h3>hi from toy-list</h3>
     <section >
         <toy-preview v-for="toy in toys" :toy="toy" :key="toy._id" 
         @removeToy="removeToy"/>

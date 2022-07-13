@@ -1,12 +1,12 @@
-<template>
+<template iv-if="toyToEdit">
     <h2>Edit:</h2>
     <pre>{{ toyToEdit }}</pre>
-    <section class="toy-edit">
+    <section class="toy-edit" >
         <form @submit.prevent="saveToy">
             <div class="form-control">
                 <label for="txt">Toy name:</label>
                 <input required v-model="toyToEdit.name" id="txt" type="text" 
-                    placeholder="Enter your toy name here..." />
+                    placeholder="Enter toy name " />
             </div>
             <div class="form-control">
                 <label for="price">Price:</label>
@@ -33,10 +33,9 @@ export default {
     created() {
         const { id } = this.$route.params
         if (id) {
-            toyService.getById(id).then((toy) => {
-                this.toyToEdit = toy
-            })
-            // } else this.toyToEdit = toyService.getEmptyToy()
+            toyService.getById(id).then((toy) => {this.toyToEdit = toy})
+        } else{
+            this.toyToEdit = toyService.getEmptyToy()
         }
     },
     methods: {

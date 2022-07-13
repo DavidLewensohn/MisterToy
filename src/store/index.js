@@ -5,10 +5,11 @@ const store = createStore({
     strict: true,
     state: {
         toys: null,
+        filterBy: null,
     },
     getters: {
-        toys(state) {
-            return state.toys
+        toysToShow({ toys}) {
+            return toys
         }
     },
     mutations: {
@@ -30,16 +31,26 @@ const store = createStore({
             toyService.getToys()
                 .then((toys) => {
                     commit({ type: 'setToys', toys })
+                    return toys
+                })
+                .catch((err) => {
+                    console.log(err)
                 })
         },
         removeToy({ commit }, { id }) {
-            toyService.removeToy(id).then(() => {
+            return toyService.removeToy(id).then(() => {
                 commit({ type: 'removeToy', id })
             })
         },
         saveToy({ commit }, { toy }) {
-            toyService.save(toy).then((toy) => {
-                commit({ type: 'saveToy' , toy})
+            return toyService.save(toy).then((toy) => {
+                commit({ type: 'saveToy', toy })
+                return toy
+            })
+        },
+        setFilterBy({ commit }, { filterBy }) {
+            toyService.getToys(filterBy).then((toys) => {
+                commit({ type: 'setToys', toys })
             })
         }
     },
